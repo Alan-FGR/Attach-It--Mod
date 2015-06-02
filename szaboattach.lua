@@ -181,7 +181,7 @@ function szaboattach.tick()
 		local hitpos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(currentVehicle, 0,raylength,0)
 		
 		local ray = WORLDPROBE._CAST_RAY_POINT_TO_POINT(curvpos.x, curvpos.y, curvpos.z, targetpos.x, targetpos.y, targetpos.z, 30, currentVehicle, 0)
-		local _, hitent = WORLDPROBE._GET_RAYCAST_RESULT(ray, '', hitpos, midpos, 0)
+		local _, _, hitent = WORLDPROBE._GET_RAYCAST_RESULT(ray, 0, hitpos, midpos, 0)
 		
 		if (hitent ~= 0) then
 			
@@ -199,7 +199,7 @@ function szaboattach.tick()
 			local hitbackpos = ENTITY.GET_ENTITY_COORDS(hitent, true)
 			
 			local backray = WORLDPROBE._CAST_RAY_POINT_TO_POINT(hitpos.x, hitpos.y, hitpos.z, curvpos.x, curvpos.y, curvpos.z, 2, hitent, 0)
-			local _, hitbackent = WORLDPROBE._GET_RAYCAST_RESULT(backray, '', hitbackpos, midpos, 0)
+			local _, _, hitbackent = WORLDPROBE._GET_RAYCAST_RESULT(backray, 0, hitbackpos, midpos, 0)
 			
 			local hook2pos = hitpos
 			local hook1pos = hitbackpos
@@ -223,12 +223,12 @@ function szaboattach.tick()
 				local snappos = 0
 				
 				local othervcastray = WORLDPROBE._CAST_RAY_POINT_TO_POINT(othervpos.x, othervpos.y, othervpos.z, othervposfront.x, othervposfront.y, othervposfront.z, 2, hitent, 0)
-				local _, othervhitent = WORLDPROBE._GET_RAYCAST_RESULT(othervcastray, '', othervcasthit, midpos, 0)
+				local _, _, othervhitent = WORLDPROBE._GET_RAYCAST_RESULT(othervcastray, 0, othervcasthit, midpos, 0)
 				if (othervhitent == currentVehicle) then
 					snappos = -1
 				else
 					othervcastray = WORLDPROBE._CAST_RAY_POINT_TO_POINT(othervpos.x, othervpos.y, othervpos.z, othervposback.x, othervposback.y, othervposback.z, 2, hitent, 0)
-					_, othervhitent = WORLDPROBE._GET_RAYCAST_RESULT(othervcastray, '', othervcasthit, midpos, 0)
+					local _, _, othervhitent = WORLDPROBE._GET_RAYCAST_RESULT(othervcastray, 0, othervcasthit, midpos, 0)
 					if (othervhitent == currentVehicle) then snappos = 1 end
 				end
 				
@@ -239,7 +239,7 @@ function szaboattach.tick()
 					local othervbackhit = ENTITY.GET_ENTITY_COORDS(hitent, true)
 					
 					local othervbackray = WORLDPROBE._CAST_RAY_POINT_TO_POINT(othervcasthit.x, othervcasthit.y, othervcasthit.z, othervpos.x, othervpos.y, othervpos.z, 2, currentVehicle, 0)
-					local _, othervhitent = WORLDPROBE._GET_RAYCAST_RESULT(othervbackray, '', othervbackhit, midpos, 0)
+					local _, _, othervhitent = WORLDPROBE._GET_RAYCAST_RESULT(othervbackray, 0, othervbackhit, midpos, 0)
 					
 					hook2pos = othervbackhit
 					hook1pos = hitbackpos
@@ -278,12 +278,14 @@ function szaboattach.tick()
 				--print('attaching vehicle')
 				--local hooksdist = GAMEPLAY.GET_DISTANCE_BETWEEN_COORDS(cvhp.x, cvhp.y, cvhp.z, nvhp.x, nvhp.y, nvhp.z, true)
 				
-				print('attaching. ropelength=',hooksdist)
+				
 				
 				newrope = ROPE.ADD_ROPE(curvpos.x,curvpos.y,curvpos.z, 0,0,0, hooksdist, 2, hooksdist, 0.1, 		0,true,true,true,0,true,0)
 				--	0,0,0  float length, int type, float max_length, float min_length, float p10, BOOL p11, BOOL p12, BOOL p13, float p14, BOOL breakable, Any *p16)
 				lastrope = newrope
 				lastattachedv = currentVehicle
+				
+				print('attaching. ropelength=',hooksdist, "newrope:",newrope, "hitent:",hitent)
 				
 				--VEHICLE.SET_VEHICLE_HANDBRAKE(nearv, false)
 				--VEHICLE.SET_VEHICLE_REDUCE_GRIP(nearv, true)
